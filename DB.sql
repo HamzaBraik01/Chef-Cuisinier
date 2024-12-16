@@ -1,0 +1,49 @@
+CREATE DATABASE ChefGastronomie;
+USE ChefGastronomie;
+
+
+CREATE TABLE Utilisateur (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Nom VARCHAR(100) NOT NULL,
+    Email VARCHAR(255) UNIQUE NOT NULL,
+    MotDePasse VARCHAR(255) NOT NULL,
+    Role ENUM('utilisateur', 'chef') NOT NULL
+);
+
+
+CREATE TABLE Menu (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    NomMenu VARCHAR(100) NOT NULL,
+    Description TEXT
+);
+
+
+CREATE TABLE Reservation (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Date DATE NOT NULL,
+    Heure TIME NOT NULL,
+    NombreDePersonnes INT NOT NULL,
+    Statut ENUM('en attente', 'accepte', 'refuse') DEFAULT 'en attente',
+    UtilisateurID INT NOT NULL,
+    MenuID INT NOT NULL,
+    FOREIGN KEY (UtilisateurID) REFERENCES Utilisateur(ID) ON DELETE CASCADE,
+    FOREIGN KEY (MenuID) REFERENCES Menu(ID) ON DELETE CASCADE
+);
+
+
+CREATE TABLE Plat (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    NomPlat VARCHAR(100) NOT NULL,
+    Description TEXT,
+    Prix FLOAT NOT NULL,
+    MenuID INT NOT NULL,
+    FOREIGN KEY (MenuID) REFERENCES Menu(ID) ON DELETE CASCADE
+);
+
+
+CREATE TABLE Image (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    ImageBlob LONGBLOB NOT NULL,
+    PlatID INT NOT NULL,
+    FOREIGN KEY (PlatID) REFERENCES Plat(ID) ON DELETE CASCADE
+);
