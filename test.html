@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Menus et Plats</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Gestion des Menus et Plats</h1>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors" onclick="openMenuModal()">
+                Ajouter un Menu
+            </button>
+        </div>
+
+        <!-- Liste des Menus -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Menu 1 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="relative">
+                    <img src="https://via.placeholder.com/350x200" alt="Menu Image" class="w-full h-48 object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3">
+                        <h2 class="text-xl font-bold">Menu Classique</h2>
+                    </div>
+                </div>
+
+                <div class="p-4">
+                    <p class="text-gray-600 mb-4">Un menu traditionnel français</p>
+                    
+                    <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 mb-4" onclick="openDishModal()">
+                        Ajouter un Plat
+                    </button>
+
+                    <!-- Liste des Plats -->
+                    <div class="space-y-4">
+                        <!-- Plat 1 -->
+                        <div class="flex items-center border-b pb-2">
+                            <img src="https://via.placeholder.com/80" alt="Plat Image" class="w-16 h-16 object-cover rounded mr-4">
+                            <div class="flex-grow">
+                                <h3 class="font-semibold">Salade Niçoise</h3>
+                                <p class="text-gray-600 text-sm">Salade composée avec thon, œufs, olives</p>
+                                <p class="text-blue-600 font-bold">12.50 €</p>
+                            </div>
+                        </div>
+
+                        <!-- Plat 2 -->
+                        <div class="flex items-center border-b pb-2">
+                            <img src="https://via.placeholder.com/80" alt="Plat Image" class="w-16 h-16 object-cover rounded mr-4">
+                            <div class="flex-grow">
+                                <h3 class="font-semibold">Coq au Vin</h3>
+                                <p class="text-gray-600 text-sm">Poulet mijoté au vin rouge</p>
+                                <p class="text-blue-600 font-bold">18.90 €</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu 2 -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="relative">
+                    <img src="https://via.placeholder.com/350x200" alt="Menu Image" class="w-full h-48 object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3">
+                        <h2 class="text-xl font-bold">Menu Végétarien</h2>
+                    </div>
+                </div>
+
+                <div class="p-4">
+                    <p class="text-gray-600 mb-4">Un menu 100% végétal</p>
+                    
+                    <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 mb-4" onclick="openDishModal()">
+                        Ajouter un Plat
+                    </button>
+
+                    <!-- Aucun plat pour ce menu -->
+                    <div class="text-gray-500 italic">
+                        Aucun plat dans ce menu
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Ajouter Menu (Masqué par défaut) -->
+        <div id="menuModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-6 w-96">
+                <h2 class="text-2xl font-bold mb-4">Ajouter un Menu</h2>
+                <div class="space-y-4">
+                    <input type="text" placeholder="Nom du Menu" class="w-full border rounded p-2">
+                    <textarea placeholder="Description du Menu" class="w-full border rounded p-2"></textarea>
+                    <input type="text" placeholder="URL de l'image" class="w-full border rounded p-2">
+                    <div class="flex justify-end space-x-2">
+                        <button onclick="closeMenuModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                            Annuler
+                        </button>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded">
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Ajouter Plat (Masqué par défaut) -->
+        <div id="dishModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-6 w-96">
+                <h2 class="text-2xl font-bold mb-4">Ajouter un Plat</h2>
+                <div class="space-y-4">
+                    <input type="text" placeholder="Nom du Plat" class="w-full border rounded p-2">
+                    <textarea placeholder="Description du Plat" class="w-full border rounded p-2"></textarea>
+                    <input type="number" step="0.01" placeholder="Prix" class="w-full border rounded p-2">
+                    <input type="text" placeholder="URL de l'image" class="w-full border rounded p-2">
+                    <div class="flex justify-end space-x-2">
+                        <button onclick="closeDishModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                            Annuler
+                        </button>
+                        <button class="bg-green-500 text-white px-4 py-2 rounded">
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openMenuModal() {
+            document.getElementById('menuModal').classList.remove('hidden');
+        }
+
+        function closeMenuModal() {
+            document.getElementById('menuModal').classList.add('hidden');
+        }
+
+        function openDishModal() {
+            document.getElementById('dishModal').classList.remove('hidden');
+        }
+
+        function closeDishModal() {
+            document.getElementById('dishModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

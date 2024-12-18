@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Contenu précédent du dashboard -->
+        <div id="previous-dashboard">
+            <!-- [Insérez ici le contenu précédent du dashboard] -->
+        </div>
+
+        <!-- Nouvelle section Gestion des Menus -->
+        <div class="mt-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Gestion des Menus</h2>
+                <button onclick="openMenuModal()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                    Ajouter un Menu
+                </button>
+            </div>
+
+            <!-- Liste des Menus -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Menu 1 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="relative">
+                        <img src="https://via.placeholder.com/350x200" alt="Menu Image" class="w-full h-48 object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3">
+                            <h3 class="text-xl font-bold">Menu Classique</h3>
+                        </div>
+                    </div>
+
+                    <div class="p-4">
+                        <p class="text-gray-600 mb-4">Un menu traditionnel français</p>
+                        
+                        <button onclick="openDishModal()" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 mb-4">
+                            Ajouter un Plat
+                        </button>
+
+                        <!-- Liste des Plats -->
+                        <div class="space-y-4">
+                            <!-- Plat 1 -->
+                            <div class="flex items-center border-b pb-2">
+                                <img src="https://via.placeholder.com/80" alt="Plat Image" class="w-16 h-16 object-cover rounded mr-4">
+                                <div class="flex-grow">
+                                    <h4 class="font-semibold">Salade Niçoise</h4>
+                                    <p class="text-gray-600 text-sm">Salade composée avec thon, œufs, olives</p>
+                                    <p class="text-blue-600 font-bold">12.50 €</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-500 hover:text-blue-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Plat 2 -->
+                            <div class="flex items-center border-b pb-2">
+                                <img src="https://via.placeholder.com/80" alt="Plat Image" class="w-16 h-16 object-cover rounded mr-4">
+                                <div class="flex-grow">
+                                    <h4 class="font-semibold">Coq au Vin</h4>
+                                    <p class="text-gray-600 text-sm">Poulet mijoté au vin rouge</p>
+                                    <p class="text-blue-600 font-bold">18.90 €</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-500 hover:text-blue-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Menu 2 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="relative">
+                        <img src="https://via.placeholder.com/350x200" alt="Menu Image" class="w-full h-48 object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3">
+                            <h3 class="text-xl font-bold">Menu Végétarien</h3>
+                        </div>
+                    </div>
+
+                    <div class="p-4">
+                        <p class="text-gray-600 mb-4">Un menu 100% végétal</p>
+                        
+                        <button onclick="openDishModal()" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 mb-4">
+                            Ajouter un Plat
+                        </button>
+
+                        <div class="text-gray-500 italic text-center py-4">
+                            Aucun plat dans ce menu
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Ajouter Menu -->
+        <div id="menuModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-6 w-96">
+                <h2 class="text-2xl font-bold mb-4">Ajouter un Menu</h2>
+                <div class="space-y-4">
+                    <input type="text" placeholder="Nom du Menu" class="w-full border rounded p-2">
+                    <textarea placeholder="Description du Menu" class="w-full border rounded p-2"></textarea>
+                    <input type="text" placeholder="URL de l'image" class="w-full border rounded p-2">
+                    <div class="flex justify-end space-x-2">
+                        <button onclick="closeMenuModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                            Annuler
+                        </button>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded">
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Ajouter Plat -->
+        <div id="dishModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-6 w-96">
+                <h2 class="text-2xl font-bold mb-4">Ajouter un Plat</h2>
+                <div class="space-y-4">
+                    <input type="text" placeholder="Nom du Plat" class="w-full border rounded p-2">
+                    <textarea placeholder="Description du Plat" class="w-full border rounded p-2"></textarea>
+                    <input type="number" step="0.01" placeholder="Prix" class="w-full border rounded p-2">
+                    <input type="text" placeholder="URL de l'image" class="w-full border rounded p-2">
+                    <div class="flex justify-end space-x-2">
+                        <button onclick="closeDishModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                            Annuler
+                        </button>
+                        <button class="bg-green-500 text-white px-4 py-2 rounded">
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fonctions pour gérer les modales
+        function openMenuModal() {
+            document.getElementById('menuModal').classList.remove('hidden');
+        }
+
+        function closeMenuModal() {
+            document.getElementById('menuModal').classList.add('hidden');
+        }
+
+        function openDishModal() {
+            document.getElementById('dishModal').classList.remove('hidden');
+        }
+
+        function closeDishModal() {
+            document.getElementById('dishModal').classList.add('hidden');
+        }
+
+        // Remplacer le contenu précédent du dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            const previousDashboard = document.getElementById('previous-dashboard');
+            previousDashboard.innerHTML = `
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">Dashboard Admin</h1>
+
+                <!-- Statistiques -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <!-- [Insérez ici le contenu des cartes de statistiques] -->
+                    <!-- Le contenu est identique à votre fichier original -->
+                </div>
+
+                <!-- Prochaine Réservation -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <!-- [Insérez ici le contenu de la prochaine réservation] -->
+                    <!-- Le contenu est identique à votre fichier original -->
+                </div>
+
+                <!-- Tableau des Réservations -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <!-- [Insérez ici le contenu du tableau des réservations] -->
+                    <!-- Le contenu est identique à votre fichier original -->
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
