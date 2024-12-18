@@ -65,6 +65,35 @@
             </div>
         </div>
     </div>
+
+    <section id="about" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-culinary-primary mb-12">À Propos du Chef</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <img src="./img/chefportf.jpg" alt="Chef Portrait" class="rounded-lg shadow-lg">
+                </div>
+                <div>
+                    <h3 class="text-3xl font-semibold text-culinary-secondary mb-6">Chef Michel Dupont</h3>
+                    <p class="text-gray-700 mb-4">
+                        Passionné par la gastronomie depuis son plus jeune âge, le Chef Michel Dupont a parcouru le monde à la recherche des saveurs les plus exceptionnelles. Formé dans les meilleures écoles culinaires de France, il a travaillé dans des restaurants étoilés Michelin à Paris, Tokyo et New York.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        Sa philosophie culinaire repose sur le respect des ingrédients, la créativité et la précision technique. Chaque plat est une histoire, un voyage sensoriel qui transporte les convives au-delà des frontières gastronomiques traditionnelles.
+                    </p>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" class="bg-culinary-primary text-white px-4 py-2 rounded-full hover:bg-culinary-secondary transition">
+                            Parcours Professionnel
+                        </a>
+                        <a href="#contact" class="border border-culinary-primary text-culinary-primary px-4 py-2 rounded-full hover:bg-culinary-primary hover:text-white transition">
+                            Me Contacter
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     
 
     
@@ -112,6 +141,44 @@
             </div>
         </div>
     </section>
+    <!-- Modal -->
+    <div id="menuModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-lg w-full relative mx-4 sm:mx-0">
+            <button onclick="closeModal()" class="absolute top-2 right-2 bg-red-600 text-white rounded-full hover:bg-red-700 focus:outline-none p-1">
+                &times; 
+            </button>
+            <h2 id="modalTitle" class="text-2xl font-bold mb-4">Détails du Menu</h2>
+            
+            <div class="flex flex-col md:flex-row">
+                <div class="md:w-1/2 pr-4">
+                    <div id="platesContainer">
+                        <!-- Les plats dynamiques seront insérés ici -->
+                    </div>
+                </div>
+                <div class="md:w-1/2 pl-4 border-l border-gray-300">
+                    <h3 class="text-lg font-semibold mb-2">Réservation</h3>
+                    <form id="reservationForm">
+                        <div class="mb-4">
+                            <label for="reservationDate" class="block mb-1">Date de réservation</label>
+                            <input type="date" id="reservationDate" class="border border-gray-300 rounded w-full px-3 py-2">
+                        </div>
+                        <div class="mb-4">
+                            <label for="reservationTime" class="block mb-1">Heure de réservation</label>
+                            <input type="time" id="reservationTime" class="border border-gray-300 rounded w-full px-3 py-2">
+                        </div>
+                        <div class="mb-4">
+                            <label for="numberOfPersons" class="block mb-1">Nombre de personnes</label>
+                            <input type="number" id="numberOfPersons" class="border border-gray-300 rounded w-full px-3 py-2" min="1">
+                        </div>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition w-full">
+                            Réserver
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
     <!-- Footer -->
     <footer class="bg-blue-600 text-white py-12">
@@ -164,6 +231,62 @@
             mobileMenu.classList.toggle('hidden');
             mobileMenu.classList.toggle('flex');
         });
+// Exemple de données de plats pour chaque menu
+const menusData = {
+    degustation: [
+        { name: "Plat 1", description: "Description du Plat 1", price: "15€" },
+        { name: "Plat 2", description: "Description du Plat 2", price: "20€" },
+        { name: "Plat 3", description: "Description du Plat 3", price: "25€" },
+    ],
+    vegetarien: [
+        { name: "Plat 1", description: "Description du Plat Végétarien 1", price: "12€" },
+        { name: "Plat 2", description: "Description du Plat Végétarien 2", price: "16€" },
+        { name: "Plat 3", description: "Description du Plat Végétarien 3", price: "14€" },
+    ],
+    decouverte: [
+        { name: "Plat 1", description: "Description du Plat Découverte 1", price: "18€" },
+        { name: "Plat 2", description: "Description du Plat Découverte 2", price: "22€" },
+        { name: "Plat 3", description: "Description du Plat Découverte 3", price: "20€" },
+    ]
+};
+
+// Fonction pour afficher les détails du menu dans le modal
+function showMenuDetails(menuType) {
+    // Récupérer les données des plats correspondant au type de menu
+    const plates = menusData[menuType];
+
+    // Remplir le modal avec les informations du menu
+    const platesContainer = document.getElementById('platesContainer');
+    platesContainer.innerHTML = ''; 
+
+    plates.forEach(plate => {
+        const plateDiv = document.createElement('div');
+        plateDiv.className = 'border-b border-gray-300 py-2'; 
+        plateDiv.innerHTML = `
+            <h4 class="font-semibold">${plate.name}</h4>
+            <p class="text-gray-600">${plate.description}</p>
+            <p class="text-lg font-bold">${plate.price}</p>
+        `;
+        platesContainer.appendChild(plateDiv);
+    });
+
+    // Afficher le modal
+    document.getElementById('menuModal').classList.remove('hidden');
+}
+
+// Fonction pour fermer le modal
+function closeModal() {
+    document.getElementById('menuModal').classList.add('hidden');
+}
+
+// Événement 'submit' sur le formulaire de réservation pour éviter le rechargement de la page
+document.getElementById('reservationForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Empêche l'envoi du formulaire
+    alert("Réservation effectuée !");
+    closeModal(); 
+});
+
+
     </script>
 </body>
 </html>
