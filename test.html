@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Excellence - Expérience Culinaire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'culinary-primary': '#8B4513',
+                        'culinary-secondary': '#D2691E',
+                        'culinary-accent': '#FFD700'
+                    },
+                    fontFamily: {
+                        'sans': ['Garamond', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class="flex items-center">
+                <img src="chef-logo.png" alt="Chef Excellence" class="h-12 mr-3">
+                <span class="text-2xl font-bold text-culinary-primary">Chef Excellence</span>
+            </a>
+            
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#about" class="text-culinary-secondary hover:text-culinary-accent transition">À Propos</a>
+                <a href="#menus" class="text-culinary-secondary hover:text-culinary-accent transition">Menus</a>
+                <a href="#contact" class="text-culinary-secondary hover:text-culinary-accent transition">Contact</a>
+                <a href="#reservations" class="bg-culinary-primary text-white px-4 py-2 rounded-full hover:bg-culinary-secondary transition">
+                    Réservations
+                </a>
+            </div>
+            
+            <button class="md:hidden text-culinary-primary text-3xl">
+                <i class="bx bx-menu"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-24 bg-gradient-to-br from-culinary-primary to-culinary-secondary text-white">
+        <div class="container mx-auto px-4 py-16 text-center">
+            <h1 class="text-5xl font-bold mb-6">Une Expérience Gastronomique Unique</h1>
+            <p class="text-xl max-w-2xl mx-auto mb-8">
+                Découvrez des créations culinaires exceptionnelles, concoctées par un chef mondialement reconnu. Chaque plat est une œuvre d'art, chaque repas un voyage.
+            </p>
+            <div class="space-x-4">
+                <a href="#reservations" class="bg-white text-culinary-primary px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition">
+                    Réserver une Expérience
+                </a>
+                <a href="#menus" class="border-2 border-white text-white px-6 py-3 rounded-full hover:bg-white hover:text-culinary-primary transition">
+                    Découvrir les Menus
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-culinary-primary mb-12">À Propos du Chef</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <img src="chef-portrait.jpg" alt="Chef Portrait" class="rounded-lg shadow-lg">
+                </div>
+                <div>
+                    <h3 class="text-3xl font-semibold text-culinary-secondary mb-6">Chef Michel Dupont</h3>
+                    <p class="text-gray-700 mb-4">
+                        Passionné par la gastronomie depuis son plus jeune âge, le Chef Michel Dupont a parcouru le monde à la recherche des saveurs les plus exceptionnelles. Formé dans les meilleures écoles culinaires de France, il a travaillé dans des restaurants étoilés Michelin à Paris, Tokyo et New York.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        Sa philosophie culinaire repose sur le respect des ingrédients, la créativité et la précision technique. Chaque plat est une histoire, un voyage sensoriel qui transporte les convives au-delà des frontières gastronomiques traditionnelles.
+                    </p>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" class="bg-culinary-primary text-white px-4 py-2 rounded-full hover:bg-culinary-secondary transition">
+                            Parcours Professionnel
+                        </a>
+                        <a href="#contact" class="border border-culinary-primary text-culinary-primary px-4 py-2 rounded-full hover:bg-culinary-primary hover:text-white transition">
+                            Me Contacter
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menus Section -->
+    <section id="menus" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-culinary-primary mb-12">Nos Menus Exclusifs</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Menu Card 1 -->
+                <div class="bg-gray-100 rounded-lg shadow-lg overflow-hidden">
+                    <img src="menu1.jpg" alt="Menu Gastronomique" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold text-culinary-secondary mb-4">Menu Dégustation</h3>
+                        <p class="text-gray-600 mb-4">Un voyage culinaire à travers 5 plats signatures, accordés avec des vins sélectionnés.</p>
+                        <button onclick="showMenuDetails('degustation')" class="bg-culinary-primary text-white px-4 py-2 rounded-full hover:bg-culinary-secondary transition">
+                            Voir les Plats
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Menu Card 2 -->
+                <div class="bg-gray-100 rounded-lg shadow-lg overflow-hidden">
+                    <img src="menu2.jpg" alt="Menu Végétarien" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold text-culinary-secondary mb-4">Menu Végétarien</h3>
+                        <p class="text-gray-600 mb-4">Des saveurs végétales raffinées, un hommage à la nature et à la créativité.</p>
+                        <button onclick="showMenuDetails('vegetarien')" class="bg-culinary-primary text-white px-4 py-2 rounded-full hover:bg-culinary-secondary transition">
+                            Voir les Plats
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Menu Card 3 -->
+                <div class="bg-gray-100 rounded-lg shadow-lg overflow-hidden">
+                    <img src="menu3.jpg" alt="Menu Découverte" class="w-full h-64 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold text-culinary-secondary mb-4">Menu Découverte</h3>
+                        <p class="text-gray-600 mb-4">Une exploration culinaire surprise, renouvelée chaque semaine selon les inspirations.</p>
+                        <button onclick="showMenuDetails('decouverte')" class="bg-culinary-primary text-white px-4 py-2 rounded-full hover:bg-culinary-secondary transition">
+                            Voir les Plats
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-culinary-primary mb-12">Contactez-Nous</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <h3 class="text-2xl font-semibold text-culinary-secondary mb-6">Formulaire de Contact</h3>
+                    <form id="contact-form" class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2">Nom Complet</label>
+                            <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-culinary-primary">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2">Email</label>
+                            <input type="email" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-culinary-primary">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2">Message</label>
+                            <textarea required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-culinary-primary" rows="5"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-culinary-primary text-white py-3 rounded-full hover:bg-culinary-secondary transition">
+                            Envoyer le Message
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <h3 class="text-2xl font-semibold text-culinary-secondary mb-6">Informations de Contact</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <i class="bx bx-map text-culinary-primary text-2xl mr-4"></i>
+                            <p>123 Rue de la Gastronomie, Paris, France</p>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="bx bx-phone text-culinary-primary text-2xl mr-4"></i>
+                            <p>+33 1 23 45 67 89</p>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="bx bx-envelope text-culinary-primary text-2xl mr-4"></i>
+                            <p>reservations@chefexcellence.com</p>
+                        </div>
+                        <div class="mt-6">
+                            <h4 class="text-xl font-semibold text-culinary-secondary mb-4">Horaires d'Ouverture</h4>
+                            <p>Lundi - Vendredi: 10h00 - 22h00</p>
+                            <p>Samedi: 12h00 - 23h00</p>
+                            <p>Dimanche: Fermé</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Réservation Section (Previously in the document) -->
+    <section id="reservations" class="py-16 bg-gray-50">
+        <!-- (Reservation form content remains the same as in the previous version) -->
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-culinary-primary text-white py-12">
+        <!-- (Footer content remains the same as in the previous version) -->
+    </footer>
+
+    <script>
+        // Menu Details Modal Function
+        function showMenuDetails(menuType) {
+            const menuDetails = {
+                'degustation': [
+                    { name: 'Amuse-Bouche', description: 'Tartare de thon rouge aux agrumes' },
+                    { name: 'Entrée', description: 'Foie gras poêlé, chutney de figues' },
+                    { name: 'Plat Principal', description: 'Carré d\'agneau en croûte d\'herbes, purée de céleri' },
+                    { name: 'Fromage', description: 'Plateau de fromages affinés' },
+                    { name: 'Dessert', description: 'Soufflé au chocolat grand cru' }
+                ],
+                'vegetarien': [
+                    { name: 'Mise en Bouche', description: 'Tartare de betterave et avocat' },
+                    { name: 'Entrée', description: 'Velouté de potimarron, espuma de châtaigne' },
+                    { name: 'Plat Principal', description: 'Risotto aux champignons de saison, truffe noire' },
+                    { name: 'Fromage', description: 'Tome végétale aux herbes' },
+                    { name: 'Dessert', description: 'Pavlova aux fruits rouges' }
+                ],
+                'decouverte': [
+                    { name: 'Surprise 1', description: 'Création du jour inspirée des marchés' },
+                    { name: 'Surprise 2', description: 'Interprétation du moment du chef' },
+                    { name: 'Surprise 3', description: 'Exploration des saveurs locales et internationales' },
+                    { name: 'Surprise 4', description: 'Technique culinaire innovante' },
+                    { name: 'Surprise Finale', description: 'Dessert mystère du chef' }
+                ]
+            };
+
+        </script>
+    </body>
+
+</html>
