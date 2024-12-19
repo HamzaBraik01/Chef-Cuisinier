@@ -55,6 +55,41 @@
             </div>
         </div>
     </div>
+    <script>
+        const titleElement = document.querySelector('h1');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'mb-4 p-2 text-center text-red-500';
+        titleElement.insertAdjacentElement('beforebegin', messageDiv);
+
+        const form = document.querySelector('form');
+
+        function showMessage(message, isSuccess = false) {
+            messageDiv.textContent = message;
+            messageDiv.style.color = isSuccess ? 'green' : 'red';
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function validateForm(e) {
+            e.preventDefault();
+
+            const fields = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+            };
+
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(fields.email)) {
+                return showMessage('Veuillez entrer une adresse email valide');
+            }
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+            if (!passwordRegex.test(fields.password)) {
+                return showMessage('Le mot de passe doit contenir au moins 6 caractères, 1 majuscule, 1 chiffre et 1 caractère spécial');
+            }
+            showMessage('Formulaire valide !', true);
+        }
+
+        form.addEventListener('submit', validateForm);
+    </script>
 </body>
 
 </html>
