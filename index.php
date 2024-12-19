@@ -24,7 +24,7 @@
     <nav class="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
         <div class="container mx-auto flex justify-between items-center p-4">
             <!-- Logo -->
-            <a href="index.html" class="flex items-center">
+            <a href="index.php" class="flex items-center">
                 <img src="./img/logo.png" alt="Chef Excellence Logo" class="h-10">
                 <span class="ml-2 text-dark text-xl font-semibold">Chef</span>
                 <span class="text-blue-600 text-xl font-semibold">Excellence</span>
@@ -37,11 +37,11 @@
 
             <!-- Navigation -->
             <div id="mobile-menu"class="hidden md:flex items-center space-x-4">
-                <a href="index.html" class="px-3 py-2 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition">Home</a>
+                <a href="index.php" class="px-3 py-2 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition">Home</a>
                 <a href="#about" class="px-3 py-2 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition">About</a>
                 <a href="#menus" class="px-3 py-2 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition">Menu</a>
                 <a href="#contact" class="px-3 py-2 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition">Contact</a>
-                <a href="login.html" class="text-blue-600">
+                <a href="login.php" class="text-blue-600">
                     <i class="bx bx-user-circle text-2xl"></i>
                 </a>
             </div>

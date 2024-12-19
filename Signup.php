@@ -1,3 +1,37 @@
+<?php
+include 'connexion.php';
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $prenom = mysqli_real_escape_string($con, $_POST['prenom']);
+    $nom = mysqli_real_escape_string($con, $_POST['nom']);
+    $phone = mysqli_real_escape_string($con, $_POST['phone']);
+    $email = mysqli_real_escape_string($con, $_POST['email']);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $roleId = 2; 
+    $check_email = "SELECT * FROM utilisateur WHERE Email = '$email'";
+    $result = mysqli_query($con, $check_email);
+
+    if (mysqli_num_rows($result) > 0) {
+        echo "<script>
+            showMessage('Cet email existe déjà');
+        </script>";
+    } else {
+        
+        $query = "INSERT INTO utilisateur(Nom , Prenom, Phone, Email, MotDePasse, RoleID) VALUES ('$nom', '$prenom', '$phone', '$email', '$password', $roleId)";
+
+        if (mysqli_query($con, $query)) {
+            echo "<script>
+                showMessage('Inscription réussie ! Redirection...', true);
+            </script>";
+            header("Location: login.php");
+            exit();
+        } else {
+            echo "<script>
+                showMessage('Erreur lors de l\'inscription: " . mysqli_error($con) . "');
+            </script>";
+        }
+    }
+}
+?>
 <!doctype html>
 <html lang="en">
 
@@ -75,7 +109,7 @@
             <!-- Login Link -->
             <div class="mt-6 text-center">
                 <span class="text-gray-600">Already have an account?</span>
-                <a href="login.html" class="text-blue-500 hover:underline font-medium">Login here</a>
+                <a href="login.php" class="text-blue-500 hover:underline font-medium">Login here</a>
             </div>
         </div>
     </div>
@@ -142,6 +176,7 @@
             }
 
             showMessage('Formulaire valide !', true);
+            form.submit();
         }
 
         form.addEventListener('submit', validateForm);
