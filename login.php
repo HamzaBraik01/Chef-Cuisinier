@@ -44,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body class="h-screen flex items-center justify-center bg-gray-100">
+    
     <div class="bg-white shadow-lg flex flex-col lg:flex-row items-center h-screen w-full lg:w-4/5 mx-auto rounded-lg">
         
         <div class="w-full lg:w-1/2 h-64 lg:h-full hidden lg:block">

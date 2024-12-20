@@ -254,10 +254,10 @@
                 <div class="flex flex-col items-center mb-8 md:mb-0"> 
                     <h4 class="font-semibold mb-4">Quick Links</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="hover:text-blue-200">Home</a></li>
-                        <li><a href="#" class="hover:text-blue-200">Menu</a></li>
-                        <li><a href="#" class="hover:text-blue-200">About Us</a></li>
-                        <li><a href="#" class="hover:text-blue-200">Contact</a></li> 
+                        <li><a href="index.php" class="hover:text-blue-200">Home</a></li>
+                        <li><a href="#menus" class="hover:text-blue-200">Menu</a></li>
+                        <li><a href="#about" class="hover:text-blue-200">About Us</a></li>
+                        <li><a href="#contact" class="hover:text-blue-200">Contact</a></li> 
                     </ul>
                 </div>
     
