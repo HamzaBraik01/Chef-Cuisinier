@@ -34,10 +34,14 @@ if ($resultenAttente) {
     $row = mysqli_fetch_assoc($resultenAttente);
     $reservationsenAttente = $row['total'];
 }
+/*-----------------------------------------------------------------------------------*/
+// Requête pour les prochaines réservations
+$queryReservations = "SELECT r.*, u.Nom, u.Prenom FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID WHERE r.Statut = 'accepte' AND r.Date >= '$dateAujourdhui' ORDER BY r.Date";
+$resultReservations = mysqli_query($con, $queryReservations);
 
 /*-----------------------------------------------------------------------------------*/
 // Requête pour obtenir les réservations
-$query = "SELECT r.*, u.Nom, u.Prenom FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID";
+$query = "SELECT r.*, u.Nom, u.Prenom, m.NomMenu FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID JOIN menu m ON r.MenuID = m.ID";
 $result = mysqli_query($con, $query);
 
 /*---------------------------------------------------------------------------------------*/
@@ -47,10 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $query = "UPDATE reservation SET Statut = ? WHERE ID = ?";
     $stmt = mysqli_prepare($con, $query);
     mysqli_stmt_bind_param($stmt, 'si', $statut, $id);
-    // Exécuter la requête
     mysqli_stmt_execute($stmt);
 
-    // en redirigeant l'utilisateur vers la même page
+    
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
@@ -123,17 +126,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </div>
 
-        <!-- Prochaine Réservation -->
+        <!-- Section pour afficher les prochaines réservations -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Prochaine Réservation</h2>
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xl font-semibold text-gray-700">Marie Dupont</p>
-                    <p class="text-gray-600">Date : 15 Mars 2024</p>
-                    <p class="text-gray-600">Heure : 14:30</p>
-                </div>
-                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full">Confirmée</span>
-            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Prochaines Réservations</h2>
+            <?php if (mysqli_num_rows($resultReservations) > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($resultReservations)): ?>
+                    <div class="reservation-item flex items-center justify-between mb-4" id="reservation-<?php echo $row['ID']; ?>">
+                        <div>
+                            <p class="text-xl font-semibold text-gray-700"><?php echo htmlspecialchars($row['Prenom'] . ' ' . $row['Nom']); ?></p>
+                            <p class="text-gray-600">Date : <?php echo date('d M Y', strtotime($row['Date'])); ?></p>
+                            <p class="text-gray-600">Heure : <?php echo htmlspecialchars($row['Heure']); ?></p>
+                        </div>
+                        <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-red-600" onclick="hideReservation(<?php echo $row['ID']; ?>)">
+                            Confirmée
+                        </button>
+                    </div>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p class="text-gray-600">Aucune réservation à venir.</p>
+            <?php endif; ?>
         </div>
 
         <!-- Tableau des Réservations -->
@@ -144,6 +155,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <thead class="bg-gray-100">
                         <tr>
                             <th class="p-3 text-left text-gray-600">Client</th>
+                            <th class="p-3 text-left text-gray-600">NomMenu</th>
+                            <th class="p-3 text-left text-gray-600">Nombre De Personnes</th>
                             <th class="p-3 text-left text-gray-600">Date</th>
                             <th class="p-3 text-left text-gray-600">Heure</th>
                             <th class="p-3 text-left text-gray-600">Statut</th>
@@ -154,6 +167,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php while ($row = mysqli_fetch_assoc($result)): ?>
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-3"><?php echo htmlspecialchars($row['Prenom'] . ' ' . $row['Nom']); ?></td>
+                            <td class="p-3"><?php echo htmlspecialchars($row['NomMenu']); ?></td>
+                            <td class="p-3"><?php echo htmlspecialchars($row['NombreDePersonnes']); ?></td> 
                             <td class="p-3"><?php echo date('d/m/Y', strtotime($row['Date'])); ?></td>
                             <td class="p-3"><?php echo htmlspecialchars($row['Heure']); ?></td>
                             <td class="p-3">
@@ -356,6 +371,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         function closeDishModal() {
             document.getElementById('dishModal').classList.add('hidden');
         }
+        function hideReservation(id) {
+        var reservationElement = document.getElementById('reservation-' + id);
+        if (reservationElement) {
+            reservationElement.style.display = 'none';
+        }
+    }
     </script>
 
 </body>
