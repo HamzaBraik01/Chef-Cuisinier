@@ -1,6 +1,16 @@
 <?php
-
+session_start();
 include 'connexion.php'; 
+if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 1) {
+    header("Location: login.php"); 
+    exit();
+}
+if (isset($_POST['unset_session'])) {
+    session_unset();
+    session_destroy();
+    header("Location: index.php");
+    exit();
+}
 $totalClients = 0;
 $queryClients = "SELECT COUNT(*) AS total FROM utilisateur WHERE RoleID=2";
 $resultClients = mysqli_query($con, $queryClients);
@@ -16,13 +26,13 @@ $reservationsAujourdhui = 0;
 $reservationsDemain = 0;
 $reservationsenAttente = 0;
 
-$queryAujourdhui = "SELECT COUNT(*) AS total FROM reservation WHERE Date = '$dateAujourdhui'";
+$queryAujourdhui = "SELECT COUNT(*) AS total FROM reservation WHERE Date = '$dateAujourdhui' AND Statut = 'accepte'";
 $resultAujourdhui = mysqli_query($con, $queryAujourdhui);
 if ($resultAujourdhui) {
     $row = mysqli_fetch_assoc($resultAujourdhui);
     $reservationsAujourdhui = $row['total'];
 }
-$queryDemain = "SELECT COUNT(*) AS total FROM reservation WHERE Date = '$dateDemain'";
+$queryDemain = "SELECT COUNT(*) AS total FROM reservation WHERE Date = '$dateDemain' AND Statut = 'accepte'";
 $resultDemain = mysqli_query($con, $queryDemain);
 if ($resultDemain) {
     $row = mysqli_fetch_assoc($resultDemain);
@@ -36,7 +46,7 @@ if ($resultenAttente) {
 }
 /*-----------------------------------------------------------------------------------*/
 // Requête pour les prochaines réservations
-$queryReservations = "SELECT r.*, u.Nom, u.Prenom FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID WHERE r.Statut = 'accepte' AND r.Date >= '$dateAujourdhui' ORDER BY r.Date";
+$queryReservations = "SELECT r.*, u.Nom, u.Prenom FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID WHERE r.Statut = 'accepte' AND r.Date = '$dateAujourdhui' ORDER BY r.Date ASC limit 1 ";
 $resultReservations = mysqli_query($con, $queryReservations);
 
 /*-----------------------------------------------------------------------------------*/
@@ -52,11 +62,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = mysqli_prepare($con, $query);
     mysqli_stmt_bind_param($stmt, 'si', $statut, $id);
     mysqli_stmt_execute($stmt);
+    /*------------------------------------------------------*/
+    /*
+    $menu_name = mysqli_real_escape_string($con, $_POST['menu_name']);
+    $menu_description = mysqli_real_escape_string($con, $_POST['menu_description']);
 
-    
+    // Vérifier si une image a été téléchargée
+    if (isset($_FILES['menu_image']) && $_FILES['menu_image']['error'] === UPLOAD_ERR_OK) {
+        // Récupérer les détails du fichier image
+        $image_tmp_name = $_FILES['menu_image']['tmp_name'];
+        $image_name = $_FILES['menu_image']['name'];
+        $image_type = $_FILES['menu_image']['type'];
+
+        // Valider le type de fichier (seulement les images)
+        $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+        if (in_array($image_type, $allowed_types)) {
+            // Lire le contenu de l'image en binaire
+            $image_blob = file_get_contents($image_tmp_name);
+
+            // Préparer la requête d'insertion
+            $query = "INSERT INTO menu (NomMenu, Description, ImageMenu) VALUES ('$menu_name', '$menu_description', ?)";
+
+            // Préparer la requête avec un paramètre pour l'image binaire
+            if ($stmt = mysqli_prepare($con, $query)) {
+                mysqli_stmt_bind_param($stmt, "s", $image_blob);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+            }
+        }
+    }
+    */
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
+/*-----------------------------------------------*/
+
 ?>
 
 <!DOCTYPE html>
@@ -131,13 +171,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Prochaines Réservations</h2>
             <?php if (mysqli_num_rows($resultReservations) > 0): ?>
                 <?php while ($row = mysqli_fetch_assoc($resultReservations)): ?>
-                    <div class="reservation-item flex items-center justify-between mb-4" id="reservation-<?php echo $row['ID']; ?>">
+                    <div class="reservation-item flex items-center justify-between mb-4">
                         <div>
                             <p class="text-xl font-semibold text-gray-700"><?php echo htmlspecialchars($row['Prenom'] . ' ' . $row['Nom']); ?></p>
                             <p class="text-gray-600">Date : <?php echo date('d M Y', strtotime($row['Date'])); ?></p>
                             <p class="text-gray-600">Heure : <?php echo htmlspecialchars($row['Heure']); ?></p>
                         </div>
-                        <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-red-600" onclick="hideReservation(<?php echo $row['ID']; ?>)">
+                        <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-red-600">
                             Confirmée
                         </button>
                     </div>
@@ -312,6 +352,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
             </div>
         </div>
+        <div class="mt-8">
+            <form action="" method="post">
+                <button type="submit" name="unset_session" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">Se déconnecter</button>
+            </form>
+        </div>
+        
     </div>
     
     
@@ -319,41 +365,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div id="menuModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
         <div class="bg-white rounded-lg p-6 w-96">
             <h2 class="text-2xl font-bold mb-4">Ajouter un Menu</h2>
-            <div class="space-y-4">
-                <input type="text" placeholder="Nom du Menu" class="w-full border rounded p-2">
-                <textarea placeholder="Description du Menu" class="w-full border rounded p-2"></textarea>
-                <input type="text" placeholder="URL de l'image" class="w-full border rounded p-2">
+            <form action="" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <input type="text" name="menu_name" placeholder="Nom du Menu" class="w-full border rounded p-2" required>
+                <textarea name="menu_description" placeholder="Description du Menu" class="w-full border rounded p-2" required></textarea>
+                <input type="file" name="menu_image" accept="image/*" class="w-full border rounded p-2" required>
                 <div class="flex justify-end space-x-2">
-                    <button onclick="closeMenuModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                    <button type="button" onclick="closeMenuModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
                         Annuler
                     </button>
-                    <button class="bg-blue-500 text-white px-4 py-2 rounded">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
                         Ajouter
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
+
     <!-- Modal Ajouter plat -->
     <div id="dishModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
         <div class="bg-white rounded-lg p-6 w-96">
             <h2 class="text-2xl font-bold mb-4">Ajouter un Plat</h2>
-            <div class="space-y-4">
-                <input type="text" placeholder="Nom du Plat" class="w-full border rounded p-2">
-                <textarea placeholder="Description du Plat" class="w-full border rounded p-2"></textarea>
-                <input type="number" step="0.01" placeholder="Prix" class="w-full border rounded p-2">
-                <input type="text" placeholder="URL de l'image" class="w-full border rounded p-2">
+            <form action="" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <input type="text" name="dish_name" placeholder="Nom du Plat" class="w-full border rounded p-2" required>
+                <textarea name="dish_description" placeholder="Description du Plat" class="w-full border rounded p-2" required></textarea>
+                <input type="number" name="dish_price" step="0.01" placeholder="Prix" class="w-full border rounded p-2" required>
+                <input type="file" name="dish_image" accept="image/*" class="w-full border rounded p-2" required>
                 <div class="flex justify-end space-x-2">
-                    <button onclick="closeDishModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                    <button type="button" onclick="closeDishModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
                         Annuler
                     </button>
-                    <button class="bg-green-500 text-white px-4 py-2 rounded">
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
                         Ajouter
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
+
     <script>
         // Fonctions pour gérer les modales
         function openMenuModal() {
@@ -371,12 +419,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         function closeDishModal() {
             document.getElementById('dishModal').classList.add('hidden');
         }
-        function hideReservation(id) {
-        var reservationElement = document.getElementById('reservation-' + id);
-        if (reservationElement) {
-            reservationElement.style.display = 'none';
-        }
-    }
     </script>
 
 </body>

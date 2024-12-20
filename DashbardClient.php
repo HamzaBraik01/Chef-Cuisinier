@@ -1,3 +1,17 @@
+<?php
+session_start();
+include 'connexion.php'; 
+if (!isset($_SESSION['roleId']) || $_SESSION['roleId'] != 2) {
+    header("Location: login.php"); 
+    exit();
+}
+if (isset($_POST['unset_session'])) {
+    session_unset();
+    session_destroy();
+    header("Location: index.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -81,6 +95,12 @@
                 </tbody>
             </table>
         </div>
+        
+    </div>
+    <div class="mt-8">
+            <form action="" method="post">
+                <button type="submit" name="unset_session" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">Se déconnecter</button>
+            </form>
     </div>
 </body>
 </html>

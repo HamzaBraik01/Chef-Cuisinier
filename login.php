@@ -1,17 +1,18 @@
 <?php
-
+session_start(); 
 include 'connexion.php'; 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = mysqli_real_escape_string($con, $_POST['email']);
     $password = $_POST['password'];
-
     $query = "SELECT * FROM utilisateur WHERE Email = '$email'";
     $result = mysqli_query($con, $query);
 
     if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
         if (password_verify($password, $user['MotDePasse'])) {
+            $_SESSION['firstName'] = $user['nom'];
+            $_SESSION['email'] = $user['Email'];
+            $_SESSION['roleId'] = $user['RoleID'];
             $roleId = $user['RoleID'];
             if ($roleId == 1) {
                 header("Location: DashboardChef.php");
@@ -31,6 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 <!doctype html>
 <html lang="en">
+
+
+<a href='login.php?logout=true'></a>
 
 <head>
     <meta charset="utf-8">
