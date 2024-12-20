@@ -203,3 +203,219 @@
     </script>
 </body>
 </html>
+
+
+<?php
+// Connexion à la base de données
+include 'connexion.php';
+
+// Requête pour obtenir les réservations
+$query = "SELECT r.*, u.Nom, u.Prenom FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID";
+$result = mysqli_query($con, $query);
+?>
+
+<!-- Tableau des Réservations -->
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Gestion des Réservations</h2>
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3 text-left text-gray-600">Client</th>
+                    <th class="p-3 text-left text-gray-600">Date</th>
+                    <th class="p-3 text-left text-gray-600">Heure</th>
+                    <th class="p-3 text-left text-gray-600">Statut</th>
+                    <th class="p-3 text-left text-gray-600">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-3"><?php echo $row['Prenom'] . ' ' . $row['Nom']; ?></td>
+                    <td class="p-3"><?php echo date('d/m/Y', strtotime($row['Date'])); ?></td>
+                    <td class="p-3"><?php echo $row['Heure']; ?></td>
+                    <td class="p-3">
+                        <span class="<?php echo $row['Statut'] == 'accepte' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?> px-2 py-1 rounded-full">
+                            <?php echo $row['Statut'] == 'accepte' ? 'Acceptée' : 'En Attente'; ?>
+                        </span>
+                    </td>
+                    <td class="p-3">
+                        <div class="flex space-x-2">
+                            <form action="update_statut.php" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="<?php echo $row['ID']; ?>">
+                                <input type="hidden" name="statut" value="accepte">
+                                <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600" type="submit">
+                                    Accepter
+                                </button>
+                            </form>
+                            <form action="update_statut.php" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="<?php echo $row['ID']; ?>">
+                                <input type="hidden" name="statut" value="refuse">
+                                <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" type="submit">
+                                    Refuser
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<?php
+include 'connexion.php'; 
+// Requête pour obtenir les réservations
+$query = "SELECT r.*, u.Nom, u.Prenom FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID";
+$result = mysqli_query($con, $query);
+
+/*---------------------------------------------------------------------------------------*/
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id = $_POST['id'];
+    $statut = $_POST['statut'];
+    $query = "UPDATE reservation SET Statut = ? WHERE ID = ?";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 'si', $statut, $id);
+    // Exécuter la requête
+    mysqli_stmt_execute($stmt);
+
+    // en redirigeant l'utilisateur vers la même page
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+?>
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Gestion des Réservations</h2>
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3 text-left text-gray-600">Client</th>
+                    <th class="p-3 text-left text-gray-600">Date</th>
+                    <th class="p-3 text-left text-gray-600">Heure</th>
+                    <th class="p-3 text-left text-gray-600">Statut</th>
+                    <th class="p-3 text-left text-gray-600">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-3"><?php echo $row['Prenom'] . ' ' . $row['Nom']; ?></td>
+                    <td class="p-3"><?php echo date('d/m/Y', strtotime($row['Date'])); ?></td>
+                    <td class="p-3"><?php echo $row['Heure']; ?></td>
+                    <td class="p-3">
+                        <span class="<?php echo $row['Statut'] == 'accepte' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?> px-2 py-1 rounded-full">
+                            <?php echo $row['Statut'] == 'accepte' ? 'Acceptée' : 'refuse'; ?>
+                        </span>
+                    </td>
+                    <td class="p-3">
+                        <div class="flex space-x-2">
+                            <form action="" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="<?php echo $row['ID']; ?>">
+                                <input type="hidden" name="statut" value="accepte">
+                                <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600" type="submit">
+                                    Accepter
+                                </button>
+                            </form>
+                            <form action="" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="<?php echo $row['ID']; ?>">
+                                <input type="hidden" name="statut" value="refuse">
+                                <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" type="submit">
+                                    Refuser
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+<?php
+include 'connexion.php'; 
+
+// Requête pour obtenir les réservations
+$query = "SELECT r.*, u.Nom, u.Prenom FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID";
+$result = mysqli_query($con, $query);
+
+/*---------------------------------------------------------------------------------------*/
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id = $_POST['id'];
+    $statut = $_POST['statut'];
+    $query = "UPDATE reservation SET Statut = ? WHERE ID = ?";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 'si', $statut, $id);
+    // Exécuter la requête
+    mysqli_stmt_execute($stmt);
+
+    // en redirigeant l'utilisateur vers la même page
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+?>
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Gestion des Réservations</h2>
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3 text-left text-gray-600">Client</th>
+                    <th class="p-3 text-left text-gray-600">Date</th>
+                    <th class="p-3 text-left text-gray-600">Heure</th>
+                    <th class="p-3 text-left text-gray-600">Statut</th>
+                    <th class="p-3 text-left text-gray-600">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-3"><?php echo htmlspecialchars($row['Prenom'] . ' ' . $row['Nom']); ?></td>
+                    <td class="p-3"><?php echo date('d/m/Y', strtotime($row['Date'])); ?></td>
+                    <td class="p-3"><?php echo htmlspecialchars($row['Heure']); ?></td>
+                    <td class="p-3">
+                        <span class="<?php 
+                            if ($row['Statut'] == 'accepte') {
+                                echo 'bg-green-100 text-green-800'; 
+                                $statusText = 'Acceptée';
+                            } elseif ($row['Statut'] == 'refuse') {
+                                echo 'bg-red-100 text-red-800';
+                                $statusText = 'Refusée'; 
+                            } else {
+                                echo 'bg-yellow-100 text-yellow-800';
+                                $statusText = 'En Attente'; 
+                            }
+                        ?> px-2 py-1 rounded-full">
+                            <?php echo $statusText; ?>
+                        </span>
+                    </td>
+                    <td class="p-3">
+                        <div class="flex space-x-2">
+                            <form action="" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="<?php echo $row['ID']; ?>">
+                                <input type="hidden" name="statut" value="accepte">
+                                <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600" type="submit">
+                                    Accepter
+                                </button>
+                            </form>
+                            <form action="" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="<?php echo $row['ID']; ?>">
+                                <input type="hidden" name="statut" value="refuse">
+                                <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" type="submit">
+                                    Refuser
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    </div>
+</div>

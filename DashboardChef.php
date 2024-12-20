@@ -1,3 +1,61 @@
+<?php
+
+include 'connexion.php'; 
+$totalClients = 0;
+$queryClients = "SELECT COUNT(*) AS total FROM utilisateur WHERE RoleID=2";
+$resultClients = mysqli_query($con, $queryClients);
+if ($resultClients) {
+    $row = mysqli_fetch_assoc($resultClients);
+    $totalClients = $row['total'];
+}
+/*------------------------------------------------------------------*/
+
+$dateAujourdhui = date('Y-m-d');
+$dateDemain = date('Y-m-d', strtotime('+1 day'));
+$reservationsAujourdhui = 0;
+$reservationsDemain = 0;
+$reservationsenAttente = 0;
+
+$queryAujourdhui = "SELECT COUNT(*) AS total FROM reservation WHERE Date = '$dateAujourdhui'";
+$resultAujourdhui = mysqli_query($con, $queryAujourdhui);
+if ($resultAujourdhui) {
+    $row = mysqli_fetch_assoc($resultAujourdhui);
+    $reservationsAujourdhui = $row['total'];
+}
+$queryDemain = "SELECT COUNT(*) AS total FROM reservation WHERE Date = '$dateDemain'";
+$resultDemain = mysqli_query($con, $queryDemain);
+if ($resultDemain) {
+    $row = mysqli_fetch_assoc($resultDemain);
+    $reservationsDemain = $row['total'];
+}
+$queryenAttente = "SELECT COUNT(*) AS total FROM reservation WHERE Date = '$dateAujourdhui'";
+$resultenAttente = mysqli_query($con, $queryenAttente);
+if ($resultenAttente) {
+    $row = mysqli_fetch_assoc($resultenAttente);
+    $reservationsenAttente = $row['total'];
+}
+
+/*-----------------------------------------------------------------------------------*/
+// Requête pour obtenir les réservations
+$query = "SELECT r.*, u.Nom, u.Prenom FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID";
+$result = mysqli_query($con, $query);
+
+/*---------------------------------------------------------------------------------------*/
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id = $_POST['id'];
+    $statut = $_POST['statut'];
+    $query = "UPDATE reservation SET Statut = ? WHERE ID = ?";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 'si', $statut, $id);
+    // Exécuter la requête
+    mysqli_stmt_execute($stmt);
+
+    // en redirigeant l'utilisateur vers la même page
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -17,7 +75,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-700">Demandes en Attente</h2>
-                        <p class="text-3xl font-bold text-yellow-600">12</p>
+                        <p class="text-3xl font-bold text-yellow-600"><?= $reservationsenAttente ?></p>
                     </div>
                     <svg class="w-12 h-12 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -30,7 +88,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-700">Réservations Aujourd'hui</h2>
-                        <p class="text-3xl font-bold text-green-600">8</p>
+                        <p class="text-3xl font-bold text-green-600"><?= $reservationsAujourdhui ?></p>
                     </div>
                     <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
@@ -43,7 +101,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-700">Réservations Demain</h2>
-                        <p class="text-3xl font-bold text-blue-600">5</p>
+                        <p class="text-3xl font-bold text-blue-600"><?= $reservationsDemain ?></p>
                     </div>
                     <svg class="w-12 h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -56,7 +114,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-700">Total Clients</h2>
-                        <p class="text-3xl font-bold text-purple-600">42</p>
+                        <p class="text-3xl font-bold text-purple-600"><?= $totalClients ?></p>
                     </div>
                     <svg class="w-12 h-12 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -93,33 +151,47 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php while ($row = mysqli_fetch_assoc($result)): ?>
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="p-3">Jean Martin</td>
-                            <td class="p-3">16/03/2024</td>
-                            <td class="p-3">10:00</td>
+                            <td class="p-3"><?php echo htmlspecialchars($row['Prenom'] . ' ' . $row['Nom']); ?></td>
+                            <td class="p-3"><?php echo date('d/m/Y', strtotime($row['Date'])); ?></td>
+                            <td class="p-3"><?php echo htmlspecialchars($row['Heure']); ?></td>
                             <td class="p-3">
-                                <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">En Attente</span>
+                                <span class="<?php 
+                                    if ($row['Statut'] == 'accepte') {
+                                        echo 'bg-green-100 text-green-800'; 
+                                        $statusText = 'Acceptée';
+                                    } elseif ($row['Statut'] == 'refuse') {
+                                        echo 'bg-red-100 text-red-800';
+                                        $statusText = 'Refusée'; 
+                                    } else {
+                                        echo 'bg-yellow-100 text-yellow-800';
+                                        $statusText = 'En Attente'; 
+                                    }
+                                ?> px-2 py-1 rounded-full">
+                                    <?php echo $statusText; ?>
+                                </span>
                             </td>
                             <td class="p-3">
                                 <div class="flex space-x-2">
-                                    <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
-                                        Accepter
-                                    </button>
-                                    <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                                        Refuser
-                                    </button>
+                                    <form action="" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" value="<?php echo $row['ID']; ?>">
+                                        <input type="hidden" name="statut" value="accepte">
+                                        <button class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600" type="submit">
+                                            Accepter
+                                        </button>
+                                    </form>
+                                    <form action="" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" value="<?php echo $row['ID']; ?>">
+                                        <input type="hidden" name="statut" value="refuse">
+                                        <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" type="submit">
+                                            Refuser
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
-                        <tr class="border-b hover:bg-gray-50">
-                            <td class="p-3">Sophie Leroy</td>
-                            <td class="p-3">17/03/2024</td>
-                            <td class="p-3">15:30</td>
-                            <td class="p-3">
-                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full">Confirmée</span>
-                            </td>
-                            <td class="p-3">-</td>
-                        </tr>
+                        <?php endwhile; ?>
                     </tbody>
                 </table>
             </div>
