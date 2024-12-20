@@ -28,7 +28,7 @@ if ($resultDemain) {
     $row = mysqli_fetch_assoc($resultDemain);
     $reservationsDemain = $row['total'];
 }
-$queryenAttente = "SELECT COUNT(*) AS total FROM reservation WHERE Date = '$dateAujourdhui'";
+$queryenAttente = "SELECT COUNT(*) AS total FROM reservation WHERE Statut = 'en attente'";
 $resultenAttente = mysqli_query($con, $queryenAttente);
 if ($resultenAttente) {
     $row = mysqli_fetch_assoc($resultenAttente);
