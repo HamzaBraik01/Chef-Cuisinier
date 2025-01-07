@@ -13,6 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['firstName'] = $user['nom'];
             $_SESSION['email'] = $user['Email'];
             $_SESSION['roleId'] = $user['RoleID'];
+            $_SESSION['ID']=$user['ID'];
             $roleId = $user['RoleID'];
             if ($roleId == 1) {
                 header("Location: DashboardChef.php");

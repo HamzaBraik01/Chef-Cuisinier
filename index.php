@@ -334,7 +334,7 @@ function closeModal() {
     document.getElementById('menuModal').classList.add('hidden');
 }
 
-// Événement 'submit' sur le formulaire de réservation pour éviter le rechargement de la page
+
 document.getElementById('reservationForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Empêche l'envoi du formulaire
     alert("Réservation effectuée !");

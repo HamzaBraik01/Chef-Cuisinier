@@ -11,6 +11,18 @@ if (isset($_POST['unset_session'])) {
     header("Location: index.php");
     exit();
 }
+/*-------------------------------------------------------------------------*/
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id = $_POST['id'];
+    $statut = $_POST['statut'];
+    $query = "UPDATE reservation SET Statut = ? WHERE ID = ?";
+    $stmt = mysqli_prepare($con, $query);
+    mysqli_stmt_bind_param($stmt, 'si', $statut, $id);
+    mysqli_stmt_execute($stmt);
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+/*--------------------------------------------------------------------------*/
 $totalClients = 0;
 $queryClients = "SELECT COUNT(*) AS total FROM utilisateur WHERE RoleID=2";
 $resultClients = mysqli_query($con, $queryClients);
@@ -19,7 +31,6 @@ if ($resultClients) {
     $totalClients = $row['total'];
 }
 /*------------------------------------------------------------------*/
-
 $dateAujourdhui = date('Y-m-d');
 $dateDemain = date('Y-m-d', strtotime('+1 day'));
 $reservationsAujourdhui = 0;
@@ -46,56 +57,13 @@ if ($resultenAttente) {
 }
 /*-----------------------------------------------------------------------------------*/
 // Requête pour les prochaines réservations
-$queryReservations = "SELECT r.*, u.Nom, u.Prenom FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID WHERE r.Statut = 'accepte' AND r.Date = '$dateAujourdhui' ORDER BY r.Date ASC limit 1 ";
+$queryReservations = "SELECT r.*, u.Nom, u.Prenom FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID WHERE r.Statut = 'accepte' AND r.Date >= '$dateAujourdhui' ORDER BY r.Date ASC limit 1 ";
 $resultReservations = mysqli_query($con, $queryReservations);
-
 /*-----------------------------------------------------------------------------------*/
 // Requête pour obtenir les réservations
 $query = "SELECT r.*, u.Nom, u.Prenom, m.NomMenu FROM reservation r JOIN utilisateur u ON r.UtilisateurID = u.ID JOIN menu m ON r.MenuID = m.ID";
 $result = mysqli_query($con, $query);
-
 /*---------------------------------------------------------------------------------------*/
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = $_POST['id'];
-    $statut = $_POST['statut'];
-    $query = "UPDATE reservation SET Statut = ? WHERE ID = ?";
-    $stmt = mysqli_prepare($con, $query);
-    mysqli_stmt_bind_param($stmt, 'si', $statut, $id);
-    mysqli_stmt_execute($stmt);
-    /*------------------------------------------------------*/
-    /*
-    $menu_name = mysqli_real_escape_string($con, $_POST['menu_name']);
-    $menu_description = mysqli_real_escape_string($con, $_POST['menu_description']);
-
-    // Vérifier si une image a été téléchargée
-    if (isset($_FILES['menu_image']) && $_FILES['menu_image']['error'] === UPLOAD_ERR_OK) {
-        // Récupérer les détails du fichier image
-        $image_tmp_name = $_FILES['menu_image']['tmp_name'];
-        $image_name = $_FILES['menu_image']['name'];
-        $image_type = $_FILES['menu_image']['type'];
-
-        // Valider le type de fichier (seulement les images)
-        $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
-        if (in_array($image_type, $allowed_types)) {
-            // Lire le contenu de l'image en binaire
-            $image_blob = file_get_contents($image_tmp_name);
-
-            // Préparer la requête d'insertion
-            $query = "INSERT INTO menu (NomMenu, Description, ImageMenu) VALUES ('$menu_name', '$menu_description', ?)";
-
-            // Préparer la requête avec un paramètre pour l'image binaire
-            if ($stmt = mysqli_prepare($con, $query)) {
-                mysqli_stmt_bind_param($stmt, "s", $image_blob);
-                mysqli_stmt_execute($stmt);
-                mysqli_stmt_close($stmt);
-            }
-        }
-    }
-    */
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
-/*-----------------------------------------------*/
 
 ?>
 
@@ -106,15 +74,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100">
+<body class="bg-gradient-to-br from-blue-500 to-purple-600 text-gray-700">
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">Dashboard Admin</h1>
+        <h1 class="text-3xl md:text-4xl font-bold text-white mb-8">Dashboard Admin</h1>
 
         <!-- Statistiques -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <!-- Carte Demandes en Attente -->
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500 hover:shadow-xl transition-all">
+            <div class="bg-white/80 rounded-lg shadow-md p-6 border-l-4 border-yellow-500 hover:shadow-xl transition-all">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-700">Demandes en Attente</h2>
@@ -127,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <!-- Carte Réservations Aujourd'hui -->
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500 hover:shadow-xl transition-all">
+            <div class="bg-white/80 rounded-lg shadow-md p-6 border-l-4 border-green-500 hover:shadow-xl transition-all">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-700">Réservations Aujourd'hui</h2>
@@ -140,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <!-- Carte Réservations Demain -->
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500 hover:shadow-xl transition-all">
+            <div class="bg-white/80 rounded-lg shadow-md p-6 border-l-4 border-blue-500 hover:shadow-xl transition-all">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-700">Réservations Demain</h2>
@@ -153,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <!-- Carte Total Clients -->
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all">
+            <div class="bg-white/80 rounded-lg shadow-md p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-700">Total Clients</h2>
@@ -167,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
 
         <!-- Section pour afficher les prochaines réservations -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="bg-white/80 rounded-lg shadow-md p-6 mb-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Prochaines Réservations</h2>
             <?php if (mysqli_num_rows($resultReservations) > 0): ?>
                 <?php while ($row = mysqli_fetch_assoc($resultReservations)): ?>
@@ -188,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
 
         <!-- Tableau des Réservations -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-white/80 rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Gestion des Réservations</h2>
             <div class="overflow-x-auto">
                 <table class="w-full">
@@ -251,159 +220,111 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </table>
             </div>
         </div>
+        
         <!-- Nouvelle section Gestion des Menus -->
         <div class="mt-8">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-800">Gestion des Menus</h2>
+                <h2 class="text-2xl font-bold text-white/90">Gestion des Menus</h2>
                 <button onclick="openMenuModal()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
                     Ajouter un Menu
                 </button>
             </div>
     
             <!-- Liste des Menus -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Menu 1 -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="relative">
-                        <img src="https://via.placeholder.com/350x200" alt="Menu Image" class="w-full h-48 object-cover">
-                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3">
-                            <h3 class="text-xl font-bold">Menu Classique</h3>
-                        </div>
-                    </div>
-    
-                    <div class="p-4">
-                        <p class="text-gray-600 mb-4">Un menu traditionnel français</p>
-                        
-                        <button onclick="openDishModal()" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 mb-4">
-                            Ajouter un Plat
-                        </button>
-    
-                        <!-- Liste des Plats -->
-                        <div class="space-y-4">
-                            <!-- Plat 1 -->
-                            <div class="flex items-center border-b pb-2">
-                                <img src="https://via.placeholder.com/80" alt="Plat Image" class="w-16 h-16 object-cover rounded mr-4">
-                                <div class="flex-grow">
-                                    <h4 class="font-semibold">Salade Niçoise</h4>
-                                    <p class="text-gray-600 text-sm">Salade composée avec thon, œufs, olives</p>
-                                    <p class="text-blue-600 font-bold">12.50 €</p>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button class="text-blue-500 hover:text-blue-700">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                    <button class="text-red-500 hover:text-red-700">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-    
-                            <!-- Plat 2 -->
-                            <div class="flex items-center border-b pb-2">
-                                <img src="https://via.placeholder.com/80" alt="Plat Image" class="w-16 h-16 object-cover rounded mr-4">
-                                <div class="flex-grow">
-                                    <h4 class="font-semibold">Coq au Vin</h4>
-                                    <p class="text-gray-600 text-sm">Poulet mijoté au vin rouge</p>
-                                    <p class="text-blue-600 font-bold">18.90 €</p>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button class="text-blue-500 hover:text-blue-700">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                                            <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                    <button class="text-red-500 hover:text-red-700">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="menuList">
+                <?php
+                $result = mysqli_query($con, "SELECT * FROM menu");
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo '
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <img src="data:image/jpeg;base64,'.base64_encode($row['ImageMenu']).'" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2">'.$row['NomMenu'].'</h3>
+                            <p class="text-gray-600">'.$row['Description'].'</p>
+                            <div class="mt-4">
+                                <button onclick="openDishModal('.$row['ID'].')" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                                    Ajouter un Plat
+                                </button>
                             </div>
                         </div>
-                    </div>
-                </div>
-    
-                <!-- Menu 2 -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="relative">
-                        <img src="https://via.placeholder.com/350x200" alt="Menu Image" class="w-full h-48 object-cover">
-                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3">
-                            <h3 class="text-xl font-bold">Menu Végétarien</h3>
+                        <div class="p-4 border-t">
+                            <h4 class="font-bold mb-2">Liste des Plats</h4>
+                            <div class="space-y-2">';
+                            
+                    $plats = mysqli_query($con, "SELECT p.*, i.ImageBlob FROM plat p LEFT JOIN image i ON p.ID = i.PlatID WHERE p.MenuID = ".$row['ID']);
+                    while ($plat = mysqli_fetch_assoc($plats)) {
+                        echo '
+                            <div class="flex items-center space-x-4 p-2 bg-gray-50 rounded">
+                                <img src="data:image/jpeg;base64,'.base64_encode($plat['ImageBlob']).'" class="w-16 h-16 object-cover rounded">
+                                <div>
+                                    <h5 class="font-bold">'.$plat['NomPlat'].'</h5>
+                                    <p class="text-sm text-gray-600">'.$plat['Description'].'</p>
+                                    <p class="text-green-600 font-bold">'.$plat['Prix'].' DH</p>
+                                </div>
+                            </div>';
+                    }
+                    echo '
+                            </div>
                         </div>
-                    </div>
-    
-                    <div class="p-4">
-                        <p class="text-gray-600 mb-4">Un menu 100% végétal</p>
-                        
-                        <button onclick="openDishModal()" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 mb-4">
-                            Ajouter un Plat
-                        </button>
-    
-                        <div class="text-gray-500 italic text-center py-4">
-                            Aucun plat dans ce menu
-                        </div>
-                    </div>
-                </div>
+                    </div>';
+                }
+                ?>
             </div>
         </div>
-        <div class="mt-8">
-            <form action="" method="post">
-                <button type="submit" name="unset_session" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">Se déconnecter</button>
-            </form>
-        </div>
+        <form action="" method="post" class="mt-6">
+            <button type="submit" name="unset_session" 
+                    class="flex items-center gap-2 bg-white text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors border border-gray-200 shadow-sm">
+                <i class="fas fa-sign-out-alt"></i>
+                Se déconnecter
+            </button>
+        </form>
         
     </div>
     
     
     <!-- Modal Ajouter Menu -->
     <div id="menuModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg p-6 w-96">
-            <h2 class="text-2xl font-bold mb-4">Ajouter un Menu</h2>
-            <form action="" method="POST" enctype="multipart/form-data" class="space-y-4">
-                <input type="text" name="menu_name" placeholder="Nom du Menu" class="w-full border rounded p-2" required>
-                <textarea name="menu_description" placeholder="Description du Menu" class="w-full border rounded p-2" required></textarea>
-                <input type="file" name="menu_image" accept="image/*" class="w-full border rounded p-2" required>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="closeMenuModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
-                        Annuler
-                    </button>
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-                        Ajouter
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="bg-white rounded-lg p-6 w-96">
+                <h2 class="text-2xl font-bold mb-4">Ajouter un Menu</h2>
+                <form action="menu.php" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <input type="text" name="menu_name" placeholder="Nom du Menu" class="w-full border rounded p-2" required>
+                    <textarea name="menu_description" placeholder="Description du Menu" class="w-full border rounded p-2" required></textarea>
+                    <input type="file" name="menu_image" accept="image/*" class="w-full border rounded p-2" required>
+                    <div class="flex justify-end space-x-2">
+                        <button type="button" onclick="closeMenuModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                            Annuler
+                        </button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                            Ajouter
+                        </button>
+                    </div>
+                </form>
+            </div>
     </div>
 
     <!-- Modal Ajouter plat -->
     <div id="dishModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg p-6 w-96">
-            <h2 class="text-2xl font-bold mb-4">Ajouter un Plat</h2>
-            <form action="" method="POST" enctype="multipart/form-data" class="space-y-4">
-                <input type="text" name="dish_name" placeholder="Nom du Plat" class="w-full border rounded p-2" required>
-                <textarea name="dish_description" placeholder="Description du Plat" class="w-full border rounded p-2" required></textarea>
-                <input type="number" name="dish_price" step="0.01" placeholder="Prix" class="w-full border rounded p-2" required>
-                <input type="file" name="dish_image" accept="image/*" class="w-full border rounded p-2" required>
-                <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="closeDishModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
-                        Annuler
-                    </button>
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
-                        Ajouter
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="bg-white rounded-lg p-6 w-96">
+                <h2 class="text-2xl font-bold mb-4">Ajouter un Plat</h2>
+                <form action="plat.php" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <input type="hidden" name="menu_id" id="menu_id_input">
+                    <input type="text" name="dish_name" placeholder="Nom du Plat" class="w-full border rounded p-2" required>
+                    <textarea name="dish_description" placeholder="Description du Plat" class="w-full border rounded p-2" required></textarea>
+                    <input type="number" name="dish_price" step="0.01" placeholder="Prix" class="w-full border rounded p-2" required>
+                    <input type="file" name="dish_image" accept="image/*" class="w-full border rounded p-2" required>
+                    <div class="flex justify-end space-x-2">
+                        <button type="button" onclick="closeDishModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded">
+                            Annuler
+                        </button>
+                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
+                            Ajouter
+                        </button>
+                    </div>
+                </form>
+            </div>
     </div>
 
     <script>
-        // Fonctions pour gérer les modales
         function openMenuModal() {
             document.getElementById('menuModal').classList.remove('hidden');
         }
@@ -412,12 +333,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             document.getElementById('menuModal').classList.add('hidden');
         }
 
-        function openDishModal() {
+        function openDishModal(menuId) {
+            document.getElementById('menu_id_input').value = menuId;
             document.getElementById('dishModal').classList.remove('hidden');
         }
 
         function closeDishModal() {
             document.getElementById('dishModal').classList.add('hidden');
+        }
+
+        
+        window.onclick = function(event) {
+            let menuModal = document.getElementById('menuModal');
+            let dishModal = document.getElementById('dishModal');
+            if (event.target == menuModal) {
+                closeMenuModal();
+            }
+            if (event.target == dishModal) {
+                closeDishModal();
+            }
         }
     </script>
 
